@@ -1,6 +1,6 @@
 {
   "name": "azgomoku-backend",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -9,6 +9,14 @@
   "keywords": [
     "Gomoku"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlynxZhou/azgomoku-backend.git"
+  },
+  "bugs": {
+    "url": "https://github.com/AlynxZhou/azgomoku-backend/issues"
+  },
+  "homepage": "https://github.com/AlynxZhou/azgomoku-backend#readme",
   "author": "Alynx Zhou <alynx.zhou@gmail.com> (https://alynx.moe)",
   "license": "Apache-2.0",
   "dependencies": {
