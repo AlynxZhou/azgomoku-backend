@@ -1,4 +1,4 @@
-const Color = {NONE: 0, WHITE: 1, BLACK: 2}
+const Color = {NONE: 1, WHITE: 2, BLACK: 3}
 
 class Session {
 	constructor(sid) {
@@ -6,10 +6,9 @@ class Session {
 		this.win = 5
 		this.mapx = 15
 		this.mapy = 15
-		this.map = []
-		for (let i = 0; i < this.mapx * this.mapy; ++i) {
-			this.map.push(Color.NONE)
-		}
+		this.map = new Array(this.mapx * this.mapy).fill(Color.NONE)
+		// Create cross lines to check.
+		// lines1 is from top-left to bottom-right.
 		this.lines1 = []
 		for (let i = 0; i <= this.mapy - this.win; ++i) {
 			this.lines1.push({
@@ -23,6 +22,7 @@ class Session {
 				'end': {'x': this.mapx - 1, 'y': this.mapx - 1 - i}
 			})
 		}
+		// lines2 is from bottom-left to top-right.
 		this.lines2 = []
 		for (let i = this.mapx - 1; i >= this.win - 1; --i) {
 			this.lines2.push({
@@ -36,12 +36,21 @@ class Session {
 				'end': {'x': this.mapx - 1, 'y': i}
 			})
 		}
-		this.watchers = {}
 		this.white = null
 		this.black = null
 		this.nextColor = Color.BLACK
-		this.result = Color.NONE
+		this.result = null
 		this.records = []
+	}
+	getWatchers(watchers) {
+		return Object.values(watchers).filter((watcher) => {
+			return watcher.sid === this.sid
+		})
+	}
+	canJoin(watcher) {
+		return watcher != null &&
+		       (this.black === watcher || this.white === watcher ||
+					  this.black == null || this.white == null)
 	}
 	index(x, y) {
 		return y * this.mapx + x
@@ -63,7 +72,7 @@ class Session {
 				}
 			}
 		}
-		return Color.NONE
+		return null
 	}
 	checkRow() {
 		for (let j = 0; j < this.mapy; ++j) {
@@ -82,7 +91,7 @@ class Session {
 				}
 			}
 		}
-		return Color.NONE
+		return null
 	}
 	checkCross() {
 		for (let line of this.lines1) {
@@ -121,19 +130,19 @@ class Session {
  				}
 			}
 		}
-		return Color.NONE
+		return null
 	}
 	checkMap() {
 		this.result = this.checkRow()
-		if (this.result !== Color.NONE) {
+		if (this.result != null) {
 			return
 		}
 		this.result = this.checkColumn()
-		if (this.result !== Color.NONE) {
+		if (this.result != null) {
 			return
 		}
 		this.result = this.checkCross()
-		if (this.result !== Color.NONE) {
+		if (this.result != null) {
 			return
 		}
 	}
@@ -144,6 +153,7 @@ class Watcher {
 		this.wid = wid
 		this.socket = socket
 		this.color = color
+		this.sid = null
 	}
 }
 
